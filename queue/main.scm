@@ -1,0 +1,23 @@
+(define (make-queue)
+  (let ((items '()))
+    (lambda (op . args)
+      (case op
+        ((enqueue)
+         (set! items (append items (list (car args)))))
+        ((dequeue)
+         (if (null? items)
+             (error "Queue is empty")
+             (let ((item (car items)))
+               (set! items (cdr items))
+               item)))
+        ((empty?)
+         (null? items))))))
+
+(define q (make-queue))
+(begin
+ (q 'enqueue 1)
+ (q 'enqueue 2)
+ (q 'enqueue 3)
+ (display (q 'dequeue))
+ (display (q 'dequeue))
+ (display (q 'empty?)))
