@@ -1,0 +1,25 @@
+(define (evaluate-rpn expr)
+  (define (apply-operator op a b)
+    (cond ((equal? op '+) (+ a b))
+          ((equal? op '-) (- a b))
+          ((equal? op '*) (* a b))
+          ((equal? op '/) (/ a b))
+          (else (error "Unknown operator"))))
+  
+  (define (eval-helper tokens stack)
+    (if (null? tokens)
+        (if (= (length stack) 1)
+            (car stack)
+            (error "Invalid RPN expression"))
+        (let ((token (car tokens))
+              (rest (cdr tokens)))
+          (if (number? token)
+              (eval-helper rest (cons token stack))
+              (let ((b (car stack))
+                    (a (cadr stack))
+                    (new-stack (cddr stack)))
+                (eval-helper rest (cons (apply-operator token a b) new-stack)))))))
+
+  (eval-helper expr '()))
+
+(display (evaluate-rpn '(3 4 + 2 * 7 /))) ; 2
